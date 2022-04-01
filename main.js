@@ -1,6 +1,7 @@
-const button = document.getElementsByTagName("button")[0];
+const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const form = document.getElementsByTagName("form")[0];
+const itemValues = [];
 button.addEventListener("click", onButtonClick)
 
 function onButtonClick(e){
@@ -8,11 +9,26 @@ function onButtonClick(e){
     addTodoItem(input.value)
 }
 
-function addTodoItem(inputValue){
+function isEmpty(inputValue){
     if (inputValue.trim() == "") {
-        showErrorMessage();
+        showErrorMessage("Item can't be empty");
+        return true;
+    }
+    return false;
+}
+
+function addTodoItem(inputValue){
+    if(isEmpty(inputValue)) {
         return;
     }
+
+    if (!itemValues.includes(inputValue)) {
+        itemValues.push(inputValue)
+    } else {
+        showErrorMessage("Item already exists");
+        return; 
+    }
+
 
     const list = document.getElementsByTagName("ul")[0];
     const listItem = document.createElement("li");
@@ -21,9 +37,9 @@ function addTodoItem(inputValue){
     button.innerHTML = "remove";
     button.setAttribute("id", `removeBtn-${inputValue.trim().replaceAll(" ", "")}`);
     list.appendChild(listItem);
-    listItem.appendChild(button);
+    listItem.appendChild(button);    
     form.reset();
-    removeTodoItem(button)
+    removeTodoItem(button);
 }
 
 function removeTodoItem(button) {
@@ -32,7 +48,7 @@ function removeTodoItem(button) {
     });
 }
 
-function showErrorMessage() {
+function showErrorMessage(message) {
     const err = document.getElementsByClassName("error");
     if (err.length > 0) {
         return false;
@@ -42,7 +58,8 @@ function showErrorMessage() {
     const body = document.getElementsByTagName("body")[0];
     div.setAttribute("class", "error")
     body.append(div);
-    div.innerHTML = "Something is wrong with your todo! Try again."
+    message = message == undefined ? "Something is wrong with the item" : message;
+    div.innerHTML = `${message}! Try again.`
     setTimeout(() => {
         div.remove();
     }, 3000)
