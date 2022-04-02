@@ -90,3 +90,13 @@ button[id*="removeBtn"] {
     right: 0;
     top: 0;
 }
+
+.error {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--red);
+    padding: 10px;
+    text-align: center;
+}
