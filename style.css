@@ -1,0 +1,62 @@
+:root {
+    --black: #001524;
+    --white: #ffffff;
+    --orange: #FF7D00;
+    --orange-dark: #dd6e03;
+    --red: #78290F;
+}
+
+body, html {
+        background-color: var(--black);
+        margin: 0;
+        padding: 0;
+        color: var(--white);
+        font-family: "Poppins", sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+input {
+    background-color: var(--white);
+    padding: 10px 20px;
+    border-radius: 3px;
+    margin: 200px auto 10px;
+    border: none;
+    display: block;
+    width: 100%;
+    border: 2px solid transparent;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid var(--orange);  
+}
+
+* {    
+    box-sizing: border-box;
+}
+
+form {
+    width: 300px;
+    margin: 0 auto;
+}
+
+button {
+    background-color: var(--orange);
+    border: none;
+    padding: 10px 20px;
+    width: 100%;
+    display: block;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color .5s ease-in-out;
+    font-size: 14px;
+    color: var(--white)
+}
+
+button:hover {
+    background-color: var(--orange-dark);
+}
