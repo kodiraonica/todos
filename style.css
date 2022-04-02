@@ -1,0 +1,54 @@
+:root {
+    --black: #001524;
+    --white: #ffffff;
+    --orange: #FF7D00;
+    --orange-dark: #dd6e03;
+    --red: #78290F;
+}
+
+* {    
+    box-sizing: border-box;
+}
+
+body, html {
+    padding: 0;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background-color: var(--black);
+    color: var(--white)
+}
+
+h1 {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+input {
+    background: var(--white);
+    padding: 10px 20px;
+    border-radius: 3px;
+    margin: 200px auto 10px;
+    border: none;
+    display: block;
+    width: 100%;
+
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid var(--orange);
+}
+
+button {
+    background-color: var(--orange);
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color .5s ease-in-out;
+}
+
+button:hover {
+    background-color: var(--orange-dark);
+}
