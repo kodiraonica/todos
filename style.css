@@ -1,11 +1,21 @@
+:root {
+    --black: #001524;
+    --white: #ffffff;
+    --orange: #FF7D00;
+    --orange-dark: #dd6e03;
+    --red: #78290F;
+}
+
 body, html {
-    background-color: #001524;
-    margin: 0;padding: 0;
-    color:#ffffff;
+    background-color: var(--black);
+    margin: 0;
+    padding: 0;
+    color: var(--white);
     font-family: "Poppins", sans-serif;
 }
 
-* {    box-sizing: border-box;
+* {    
+    box-sizing: border-box;
 }
 
 h1 {
@@ -24,7 +34,7 @@ li {
     text-align: left;
     position: relative;
     margin-bottom: 10px;
-    border-bottom: 1px solid #fff;
+    border-bottom: 1px solid var(--white);
 }
 
 
@@ -37,8 +47,8 @@ form, ul {
 
 input {
     display: block;
-    background-color: #ffffff;
-    color: #001524;
+    background-color: var(--white);
+    color: var(--black);
     padding: 10px 20px;
     border: none;
     border-radius: 3px;
@@ -50,11 +60,11 @@ input {
 
 input:focus {
     outline: none;
-    border: 2px solid  #FF7D00;
+    border: 2px solid var(--orange);
 }
 
 button {
-    background-color: #FF7D00;
+    background-color: var(--orange);
     border: none;
     padding: 10px 20px;
     width: 100%;
@@ -64,15 +74,15 @@ button {
     border-radius: 3px;
     transition: background-color .5s ease-in-out;
     font-size: 14px;
-    color: white;
+    color: var(--white)
 }
 
 button:hover {
-    background-color: #dd6e03;
+    background-color: var(--orange-dark);
 }
 
 button[id*="removeBtn"] {
-    background-color: #78290F;
+    background-color: var(--red);
     display: inline-block;
     width: auto;
     margin-left: 10px;
@@ -86,7 +96,7 @@ button[id*="removeBtn"] {
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #78290F;
+    background-color: var(--red);
     padding: 10px;
     text-align: center;
 }
