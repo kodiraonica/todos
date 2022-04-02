@@ -81,4 +81,12 @@ button:hover {
     background-color: var(--orange-dark);
 }
 
-
+button[id*="removeBtn"] {
+    background-color: var(--red);
+    display: inline-block;
+    width: auto;
+    margin-left: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
