@@ -10,7 +10,7 @@ button.addEventListener("click",function(e){
 
 function addTodoItem(value) {
     if (value.trim() == ""){
-        showErrorMessage();
+        showErrorMessage("Item can't be empty");
         return;
     }
 
