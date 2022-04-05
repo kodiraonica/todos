@@ -1,65 +1,86 @@
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
-const form = document.getElementsByTagName("form")[0];
-const itemValues = [];
-button.addEventListener("click", onButtonClick)
+let itemValues = [];
+loadTodoItems();
 
-function onButtonClick(e){
+button.addEventListener("click", function(e){
     e.preventDefault();
     addTodoItem(input.value)
-}
+});
 
-function isEmpty(inputValue){
-    if (inputValue.trim() == "") {
-        showErrorMessage("Item can't be empty");
-        return true;
+function loadTodoItems() {
+    const todos = localStorage.getItem("todos");
+    if (todos) {
+        JSON.parse(todos).forEach((todoValue) => {
+            const button = createRemoveButton(todoValue);
+            createListItem(button, todoValue);
+            removeTodoItem(button, todoValue);
+         });
+         itemValues = JSON.parse(todos);
     }
-    return false;
 }
 
-function addTodoItem(inputValue){
-    if(isEmpty(inputValue)) {
+function addTodoItem(value) {
+    if (value.trim() == "") {
+        showErrorMessage("Item can't be empty");
         return;
     }
 
-    if (!itemValues.includes(inputValue)) {
-        itemValues.push(inputValue)
+    if (!itemValues.includes(value)) {
+        itemValues.push(value);
     } else {
         showErrorMessage("Item already exists");
         return; 
     }
 
-
-    const list = document.getElementsByTagName("ul")[0];
-    const listItem = document.createElement("li");
-    const button = document.createElement("button");
-    listItem.innerHTML = inputValue;
-    button.innerHTML = "remove";
-    button.setAttribute("id", `removeBtn-${inputValue.trim().replaceAll(" ", "")}`);
-    list.appendChild(listItem);
-    listItem.appendChild(button);    
-    form.reset();
-    removeTodoItem(button);
+    localStorage.setItem("todos", JSON.stringify(itemValues));
+    const button = createRemoveButton(value);
+    createListItem(button, value);
+    removeTodoItem(button, value);
+    resetForm();
 }
 
-function removeTodoItem(button) {
-    button.addEventListener("click", () => {
+function resetForm(){
+    const form = document.getElementsByTagName("form")[0];
+    form.reset();
+}
+
+function createListItem(button, value) {
+    const li = document.createElement("li");
+    const ul = document.getElementsByTagName("ul")[0];
+    ul.appendChild(li);
+    li.innerHTML = value;
+    li.appendChild(button);
+}
+
+function createRemoveButton(value){
+    const button = document.createElement("button");
+    button.innerHTML = "remove";
+    button.setAttribute("id", `removeBtn-${value.trim().replaceAll(" ", "")}`)
+    return button;
+}
+
+function removeTodoItem(button, value) {
+    button.addEventListener("click", function() {
         button.parentElement.remove();
+        const newItemValues = itemValues.filter((item) => item !== value);
+        itemValues = newItemValues;
+        localStorage.setItem("todos", JSON.stringify(itemValues));
     });
 }
 
 function showErrorMessage(message) {
     const err = document.getElementsByClassName("error");
     if (err.length > 0) {
+        err[0].innerHTML = message;
         return false;
     }
-
     const div = document.createElement("div");
     const body = document.getElementsByTagName("body")[0];
-    div.setAttribute("class", "error")
+    div.setAttribute("class", "error");
     body.append(div);
-    message = message == undefined ? "Something is wrong with the item" : message;
-    div.innerHTML = `${message}! Try again.`
+    div.innerHTML = message;
+
     setTimeout(() => {
         div.remove();
     }, 3000)
