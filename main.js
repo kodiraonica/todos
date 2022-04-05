@@ -1,3 +1,4 @@
+loadTodoItems();
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const itemValues = [];
@@ -7,6 +8,10 @@ button.addEventListener("click",function(e){
     addTodoItem(input.value)
 });
 
+function loadTodoItems() {
+    const todos = JSON.parse(localStorage.getItem("todos"));
+    console.log(todos);
+}
 
 function addTodoItem(value) {
     if (value.trim() == ""){
@@ -20,6 +25,8 @@ function addTodoItem(value) {
         showErrorMessage("Item already exists");
         return; 
     }
+
+    localStorage.setItem("users",JSON.stringify(itemValues));
 
     const li = document.createElement("li");
     const ul = document.getElementsByTagName("ul")[0];
@@ -43,6 +50,7 @@ function removeTodoItem(button)  {
 function showErrorMessage(message) {
     const err = document.getElementsByClassName("error");
     if (err.length > 0) {
+        err[0].innerHTML = message;
         return false;
     }
     const div = document.createElement("div");
