@@ -1,11 +1,22 @@
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const itemValues = [];
+loadTodoItems();
 
 button.addEventListener("click", function (e) {
   e.preventDefault();
   addTodoItem(input.value);
 });
+
+function loadTodoItems() {
+  const todos = JSON.parse(localStorage.getItem("todos"));
+  const ul = document.getElementsByTagName("ul")[0]
+  todos.forEach(todoItem => {
+    const li = document.createElement("li");
+    li.innerHTML = todoItem;
+    ul.append(li)
+  })
+}
 
 function addTodoItem(value) {
   if (value.trim() == "") {
@@ -19,6 +30,9 @@ function addTodoItem(value) {
     showErrorMessage("Item already exists");
     return;
   }
+
+  localStorage.setItem("todos", JSON.stringify(itemValues));
+
   const li = document.createElement("li");
   const ul = document.getElementsByTagName("ul")[0];
   const form = document.getElementsByTagName("form")[0];
@@ -33,7 +47,7 @@ function addTodoItem(value) {
 }
 
 function removeTodoItem(button) {
-  button.addEventListener("click", function() {
+  button.addEventListener("click", function () {
     button.parentElement.remove();
   });
 }
@@ -41,6 +55,7 @@ function removeTodoItem(button) {
 function showErrorMessage(message) {
   const err = document.getElementsByClassName("error");
   if (err.length > 0) {
+    err[0].innerHTML = message;
     return false;
   }
 
@@ -51,5 +66,5 @@ function showErrorMessage(message) {
   div.innerHTML = message;
   setTimeout(() => {
     div.remove();
-  }, 3000);
+  }, 300000);
 }
