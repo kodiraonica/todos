@@ -10,12 +10,22 @@ button.addEventListener("click", function (e) {
 
 function loadTodoItems() {
   const todos = JSON.parse(localStorage.getItem("todos"));
-  const ul = document.getElementsByTagName("ul")[0]
-  todos.forEach(todoItem => {
-    const li = document.createElement("li");
-    li.innerHTML = todoItem;
-    ul.append(li)
-  })
+  const ul = document.getElementsByTagName("ul")[0];
+  if (todos) {
+    todos.forEach((todoItem) => {
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      button.innerHTML = "remove";
+      button.setAttribute(
+        "id",
+        `removeBtn-${todoItem.trim().replaceAll(" ", "")}`
+      );
+      li.innerHTML = todoItem;
+      ul.append(li);
+      li.append(button);
+    });
+    itemValues = todos;
+  }
 }
 
 function addTodoItem(value) {
