@@ -18,7 +18,7 @@ function loadTodoItems() {
         "id",
         `removeBtn-${todoItem.trim().replaceAll(" ", "")}`
       );
-      createListItem(buttom, todoItem);
+      createListItem(button, todoItem);
       removeTodoItem(button, todoItem);
     });
     itemValues = todos;
@@ -42,12 +42,12 @@ function addTodoItem(value) {
   const button = document.createElement("button");
   button.innerHTML = "remove";
   button.setAttribute("id", `removeBtn-${value.trim().replaceAll(" ", "")}`);
-  createListItem(buttom, value)
+  createListItem(button, value);
   removeTodoItem(button, value);
-  form.reset();
+  resetForm();
 }
 
-function resetForm(){
+function resetForm() {
   const form = document.getElementsByTagName("form")[0];
   form.reset();
 }
@@ -61,11 +61,11 @@ function createListItem(button, value) {
 }
 
 function removeTodoItem(button, value) {
-  button.addEventListener("click", function() {
-      button.parentElement.remove();
+  button.addEventListener("click", function () {
+    button.parentElement.remove();
     const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
     itemValues = newItemValues;
-    localStorage.setItem("todos", JSON.stringify(ItemValues));
+    localStorage.setItem("todos", JSON.stringify(itemValues));
   });
 }
 
