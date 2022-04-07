@@ -42,7 +42,6 @@ function addTodoItem(value) {
 
 function resetForm() {
     const form = document.getElementsByTagName("form")[0];
-    form.reset();
 }
 
 function createRemoveButton(value) {
