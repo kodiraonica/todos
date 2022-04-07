@@ -23,6 +23,7 @@ function loadTodoItems() {
       li.innerHTML = todoItem;
       ul.append(li);
       li.append(button);
+      removeTodoItem(button, todoItem);
     });
     itemValues = todos;
   }
@@ -52,13 +53,15 @@ function addTodoItem(value) {
   ul.appendChild(li);
   li.innerHTML = value;
   li.appendChild(button);
-  removeTodoItem(button);
+  removeTodoItem(button, value);
   form.reset();
 }
 
-function removeTodoItem(button) {
-  button.addEventListener("click", function () {
-    button.parentElement.remove();
+function removeTodoItem(button, value) {
+  button.addEventListener("click", function() {
+      button.parentElement.remove();
+      const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
+      localStorage.setItem("todos", JSON.stringify(newItemValues));
   });
 }
 
