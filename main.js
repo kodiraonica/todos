@@ -15,7 +15,7 @@ function loadTodoItems() {
     if (todos) {
         todos.forEach(todoItem => {
            
-            const button = createRemoveButton(value);
+            const button = createRemoveButton(todoItem);
             createListItem(button, todoItem)
             removeTodoItem(button, todoItem);
 
