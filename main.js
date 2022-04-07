@@ -3,36 +3,27 @@ const input = document.getElementsByTagName("input")[0];
 const itemValues = [];
 loadTodoItems();
 
-button.addEventListener("click", function(e) {
+button.addEventListener("click", function (e) {
     e.preventDefault();
     addTodoItem(input.value);
 });
 
 function loadTodoItems() {
     const todos = JSON.parse(localStorage.getItem("todos"));
-    const ul = document.getElementsByTagName("ul")[0];
     if (todos) {
         todos.forEach((todoItem) => {
-            const li = document.createElement("li");
             const button = document.createElement("button");
             button.innerHTML = "remove";
             button.setAttribute(
                 "id",
                 `removeBtn-${todoItem.trim().replaceAll(" ", "")}`
             );
-            li.innerHTML = todoItem;
-            ul.append(li);
-            li.append(button);
+            createListItem(button, todoItem);
             removeTodoItem(button, todoItem);
         });
         itemValues = todos;
     }
 }
-
-//event lisener na novi remove button
-//maknut list item od tog buttona, parent
-//updejtat itemValues array tako da nema taj item
-//spremiti updejtani itemValues array u local storage
 
 function addTodoItem(value) {
     if (value.trim() == "") {
@@ -48,18 +39,27 @@ function addTodoItem(value) {
     }
 
     localStorage.setItem("todos", JSON.stringify(itemValues));
-
-    const li = document.createElement("li");
-    const ul = document.getElementsByTagName("ul")[0];
-    const form = document.getElementsByTagName("form")[0];
     const button = document.createElement("button");
     button.innerHTML = "remove";
-    button.setAttribute("id", `removeBtn-${value.trim().replaceAll(" ", "")}`);
+    button.setAttribute(
+        "id", 
+        `removeBtn-${value.trim().replaceAll(" ", "")}`);
+    createListItem(button, value);
+    removeTodoItem(button, value);
+    resetForm();
+}
+
+function resetForm() {
+    const form = document.getElementsByTagName("form")[0];
+    form.reset();
+}
+
+function createListItem(button, value) {
+    const ul = document.getElementsByTagName("ul")[0];
+    const li = document.createElement("li");
     ul.appendChild(li);
     li.innerHTML = value;
     li.appendChild(button);
-    removeTodoItem(button, value);
-    form.reset();
 }
 
 function removeTodoItem(button) {
