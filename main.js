@@ -1,11 +1,32 @@
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const itemValues = [];
+loadTodoItems();
 
 button.addEventListener("click", function(e) {
     e.preventDefault();
-    addTodoItem(input.value)
-})
+    addTodoItem(input.value);
+});
+
+function loadTodoItems() {
+    const todos = JSON.parse(localStorage.getItem("todos"));
+    const ul = document.getElementsByTagName("ul")[0];
+    if (todos) {
+        todos.forEach((todoItem) => {
+            const li = document.createElement("li");
+            const button = document.createElement("button");
+            button.innerHTML = "remove";
+            button.setAttribute(
+                "id",
+                `removeBtn-${todoItem.trim().replaceAll(" ", "")}`
+            );
+            li.innerHTML = todoItem;
+            ul.append(li);
+            li.append(button);
+        });
+        itemValues = todos;
+    }
+}
 
 function addTodoItem(value) {
     if (value.trim() == "") {
@@ -13,20 +34,21 @@ function addTodoItem(value) {
         return;
     }
 
-
     if (!itemValues.includes(value)) {
-        itemValues.push(value)
+        itemValues.push(value);
     } else {
         showErrorMessage("Item already exists");
-        return; 
+        return;
     }
+
+    localStorage.setItem("todos", JSON.stringify(itemValues));
 
     const li = document.createElement("li");
     const ul = document.getElementsByTagName("ul")[0];
     const form = document.getElementsByTagName("form")[0];
     const button = document.createElement("button");
     button.innerHTML = "remove";
-    button.setAttribute("id", `removeBtn-${value.trim().replaceAll(" ","")}`)
+    button.setAttribute("id", `removeBtn-${value.trim().replaceAll(" ", "")}`);
     ul.appendChild(li);
     li.innerHTML = value;
     li.appendChild(button);
@@ -35,23 +57,25 @@ function addTodoItem(value) {
 }
 
 function removeTodoItem(button) {
-    button.addEventListener("click", function(){
+    button.addEventListener("click", function() {
         button.parentElement.remove();
-    })
+    });
 }
 
 function showErrorMessage(message) {
     const err = document.getElementsByClassName("error");
-    if(err.length > 0) {
+    if (err.length > 0) {
+        err[0].innerHTML = message;
         return false;
     }
+
     const div = document.createElement("div");
-    const body =document.getElementsByTagName("body")[0];
+    const body = document.getElementsByTagName("body")[0];
     div.setAttribute("class", "error");
     body.append(div);
     div.innerHTML = message;
 
     setTimeout(() => {
         div.remove();
-    }, 3000)
+    }, 3000);
 }
