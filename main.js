@@ -1,6 +1,6 @@
-const button = document.getElementById("add");
-const input = document.getElementsByTagName("input")[0];
-const itemValues = [];
+let button = document.getElementById("add");
+let input = document.getElementsByTagName("input")[0];
+let itemValues = [];
 loadTodoItems();
 
 button.addEventListener("click", function (e) {
@@ -62,10 +62,11 @@ function createListItem(button, value) {
     li.appendChild(button);
 }
 
-function removeTodoItem(button) {
+function removeTodoItem(button, value) {
     button.addEventListener("click", function() {
         button.parentElement.remove();
         const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
+        itemValues = newItemValues;
         localStorage.setItem("todos", JSON.stringify(newItemValues));
     });
 }
