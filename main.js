@@ -1,5 +1,5 @@
-let button = document.getElementById("add");
-let input = document.getElementsByTagName("input")[0];
+const button = document.getElementById("add");
+const input = document.getElementsByTagName("input")[0];
 let itemValues = [];
 loadTodoItems();
 
@@ -12,12 +12,7 @@ function loadTodoItems() {
     const todos = JSON.parse(localStorage.getItem("todos"));
     if (todos) {
         todos.forEach((todoItem) => {
-            const button = document.createElement("button");
-            button.innerHTML = "remove";
-            button.setAttribute(
-                "id",
-                `removeBtn-${todoItem.trim().replaceAll(" ", "")}`
-            );
+           const button = createRemoveButton(todoItem);
             createListItem(button, todoItem);
             removeTodoItem(button, todoItem);
         });
@@ -39,11 +34,7 @@ function addTodoItem(value) {
     }
 
     localStorage.setItem("todos", JSON.stringify(itemValues));
-    const button = document.createElement("button");
-    button.innerHTML = "remove";
-    button.setAttribute(
-        "id", 
-        `removeBtn-${value.trim().replaceAll(" ", "")}`);
+    const button = createRemoveButton(value);
     createListItem(button, value);
     removeTodoItem(button, value);
     resetForm();
@@ -51,7 +42,15 @@ function addTodoItem(value) {
 
 function resetForm() {
     const form = document.getElementsByTagName("form")[0];
-    form.reset();
+}
+
+function createRemoveButton(value) {
+    const button = document.createElement("button");
+    button.innerHTML = "remove";
+    button.setAttribute(
+        "id", 
+        `removeBtn-${value.trim().replaceAll(" ", "")}`);
+        return button;
 }
 
 function createListItem(button, value) {
