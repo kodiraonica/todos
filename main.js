@@ -34,9 +34,7 @@ function addTodoItem(value) {
   }
 
   localStorage.setItem("todos", JSON.stringify(itemValues));
-  const button = document.createElement("button");
-  button.innerHTML = "remove";
-  button.setAttribute("id", `removeBtn-${value.trim().replaceAll(" ", "")}`);
+  const button = createRemoveButton(value);
   createListItem(button, value);
   removeTodoItem(button, value);
   resetForm();
