@@ -70,7 +70,8 @@ function createListItem (button, value){
 function removeTodoItem(button,value)  {
         button.addEventListener("click",function(){
             button.parentElement.remove();
-            const newItemValue = itemValues.filter((itemValue) => itemValue !== value);
+            const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
+            itemValues = newItemValues;
             localStorage.setItem("todos", JSON.stringify(itemValues));
         });
 }
