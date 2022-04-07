@@ -15,9 +15,7 @@ function loadTodoItems() {
     if (todos) {
         todos.forEach(todoItem => {
            
-            const button = document.createElement("button");
-            button.innerHTML = "remove";
-            button.setAttribute("id", `removeBtn-${todoItem.trim().replaceAll(" ","")}`);
+            const button = createRemoveButton(value);
             createListItem(button, todoItem)
             removeTodoItem(button, todoItem);
 
@@ -43,10 +41,7 @@ function addTodoItem(value) {
     }
 
     localStorage.setItem("todos",JSON.stringify(itemValues));
-
-    const button = document.createElement("button");
-    button.innerHTML = "remove";
-    button.setAttribute("id", `removeBtn-${value.trim().replaceAll(" ", "")}`);
+    const button = createRemoveButton(value);
     removeTodoItem(button,value);
     createListItem(button,value);
     resetForm();
@@ -55,6 +50,13 @@ function addTodoItem(value) {
 function resetForm() {
     const form = document.getElementsByTagName("form")[0];
     form.reset();
+}
+
+function createRemoveButton (value) {
+    const button = document.createElement("button");
+    button.innerHTML = "remove";
+    button.setAttribute("id", `removeBtn-${value.trim().replaceAll(" ", "")}`);
+    return button;
 }
 
 function createListItem (button, value){
