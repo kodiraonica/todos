@@ -23,10 +23,16 @@ function loadTodoItems() {
             li.innerHTML = todoItem;
             ul.append(li);
             li.append(button);
+            removeTodoItem(button, todoItem);
         });
         itemValues = todos;
     }
 }
+
+//event lisener na novi remove button
+//maknut list item od tog buttona, parent
+//updejtat itemValues array tako da nema taj item
+//spremiti updejtani itemValues array u local storage
 
 function addTodoItem(value) {
     if (value.trim() == "") {
@@ -52,13 +58,15 @@ function addTodoItem(value) {
     ul.appendChild(li);
     li.innerHTML = value;
     li.appendChild(button);
-    removeTodoItem(button);
+    removeTodoItem(button, value);
     form.reset();
 }
 
 function removeTodoItem(button) {
     button.addEventListener("click", function() {
         button.parentElement.remove();
+        const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
+        localStorage.setItem("todos", JSON.stringify(newItemValues));
     });
 }
 
