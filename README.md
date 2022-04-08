@@ -1,2 +1,2 @@
 # todos
-A todo list with which I teach my students to manipulate DOM
+A todo list with which I teach my students to manipulate the DOM
