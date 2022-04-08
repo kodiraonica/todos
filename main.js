@@ -60,12 +60,13 @@ async function loadTodoItems() {
         });
     } else {
         showMessage(EMPTY_TODOS.text, EMPTY_TODOS.status);
+  
     }
 }
 
-function addTodoItem(value) {
+async function addTodoItem(value) {
+    let button;
     const isTodoEmpty = value.trim() == "";
-    const button = createRemoveButton(value);
     const todoAlreadyExists = itemValues.filter((itemValue) => {
         if (itemValue.title == value) {
             return true;
@@ -83,7 +84,7 @@ function addTodoItem(value) {
     }
 
     itemValues.push(value);
-    fetch(`${API_URL}/todo`, {
+    await fetch(`${API_URL}/todo`, {
         method: 'POST',
         body: JSON.stringify({
             title: value
@@ -93,9 +94,11 @@ function addTodoItem(value) {
         },
     })
     .then((response) => response.json())
-    .then(() => showMessage(SUCCESS_MESSAGE_ITEM_ADDED.text, SUCCESS_MESSAGE_ITEM_ADDED.status));
-    
-    createListItem(button, value);
+    .then((json) => button = createRemoveButton(json._id))
+    .then(() => showMessage(SUCCESS_MESSAGE_ITEM_ADDED.text, SUCCESS_MESSAGE_ITEM_ADDED.status))
+    .then(() => removeTodoItem(button, button.getAttribute("id")))
+    .then(() => createListItem(button, value))
+
     resetForm();
 }
 
@@ -117,7 +120,8 @@ function createListItem(button, value) {
 function createRemoveButton(value){
     const button = document.createElement("button");
     button.innerHTML = "remove";
-    button.setAttribute("id", `removeBtn-${value}`)
+    button.setAttribute("class", "removeBtn")
+    button.setAttribute("id", value)
     return button;
 }
 
@@ -128,6 +132,8 @@ function removeTodoItem(button, value) {
             method: 'DELETE',
         }).then((res) => {
             if (res.status == 200) {
+                const newItemValues = itemValues.filter((item) => item !== value);
+                itemValues = newItemValues;
                 showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status)
             } else {
                 showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status)

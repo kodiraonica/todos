@@ -87,13 +87,13 @@ button:hover {
     background-color: var(--orange-dark);
 }
 
-button[id*="removeBtn"] {
+.removeBtn {
     background-color: var(--red);
     width: auto;
     float: right;
 }
 
-button[id*="removeBtn"]:hover {
+.removeBtn:hover {
     background-color: var(--red-dark);
 }
 
