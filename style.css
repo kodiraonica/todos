@@ -101,7 +101,7 @@ button:hover {
     position: fixed;
     bottom: 0;
     left: 0;
-    right: 0;
+    right: auto;
     background-color: var(--red);
     padding: 10px;
     text-align: center;
@@ -111,7 +111,7 @@ button:hover {
     position: fixed;
     bottom: 0;
     left: 0;
-    right: 0;
+    right: auto;
     background-color: green;
     padding: 10px;
     text-align: center;
