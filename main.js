@@ -1,6 +1,8 @@
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
+const LOCAL_STORAGE_KEY = "todos"
 let itemValues = [];
+
 loadTodoItems();
 
 button.addEventListener("click", function (e) {
@@ -9,12 +11,13 @@ button.addEventListener("click", function (e) {
 });
 
 function loadTodoItems() {
-  const todos = JSON.parse(localStorage.getItem("todos"));
+  const todos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
   if (todos) {
     todos.forEach((todoItem) => {
       const button = document.createRemoveButton("todoItem");
       createListItem(button, todoItem);
       removeTodoItem(button, todoItem);
+      showMessage("Items loades", "success")
     });
     itemValues = todos;
   }
@@ -22,18 +25,18 @@ function loadTodoItems() {
 
 function addTodoItem(value) {
   if (value.trim() == "") {
-    showErrorMessage("Item can't be empty");
+    showMessage("Item can't be empty", "error");
     return;
   }
 
   if (!itemValues.includes(value)) {
     itemValues.push(value);
   } else {
-    showErrorMessage("Item already exists");
+    showMessage("Item already exists", "error");
     return;
   }
 
-  localStorage.setItem("todos", JSON.stringify(itemValues));
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(itemValues));
   const button = createRemoveButton(value);
   createListItem(button, value);
   removeTodoItem(button, value);
@@ -65,12 +68,13 @@ function removeTodoItem(button, value) {
     button.parentElement.remove();
     const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
     itemValues = newItemValues;
-    localStorage.setItem("todos", JSON.stringify(itemValues));
+    showMessage("Item removed", "success")
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(itemValues));
   });
 }
 
-function showErrorMessage(message) {
-  const err = document.getElementsByClassName("error");
+function showMessage(message, status) {
+  const err = document.getElementsByClassName(status);
   if (err.length > 0) {
     err[0].innerHTML = message;
     return false;
@@ -78,7 +82,7 @@ function showErrorMessage(message) {
 
   const div = document.createElement("div");
   const body = document.getElementsByTagName("body")[0];
-  div.setAttribute("class", "error");
+  div.setAttribute("class", status);
   body.append(div);
   div.innerHTML = message;
   setTimeout(() => {
