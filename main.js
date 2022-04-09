@@ -1,3 +1,29 @@
+const messages = {
+  ERROR_MESSAGES_EMPTY: {
+    text: "Item can't be empty",
+    status: 'error'
+  },
+  ERROR_MESSAGES_ALREADY_EXIST: {
+    text: "Item already exists",
+    status: "error"
+  },
+  SUCCESS_MESSAGE_ITEMS_LOADED: {
+    text: "Items loaded",
+    status: "sucess"
+  },
+  SUCCESS_MESSAGE_ITEM_REMOVED: {
+    text: "Items loaded",
+    status: "sucess"
+  }
+}
+
+const {
+  ERROR_MESSAGES_EMPTY,
+  ERROR_MESSAGES_ALREADY_EXIST,
+  SUCCESS_MESSAGE_ITEMS_LOADED,
+  SUCCESS_MESSAGE_ITEM_REMOVED
+} = messages;
+
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const LOCAL_STORAGE_KEY = "todos"
@@ -17,7 +43,7 @@ function loadTodoItems() {
       const button = createRemoveButton("todoItem");
       createListItem(button, todoItem);
       removeTodoItem(button, todoItem);
-      showMessage("Items loaded", "success")
+      showMessage(SUCCESS_MESSAGE_ITEMS_LOADED.text, SUCCESS_MESSAGE_ITEMS_LOADED.status)
     });
     itemValues = todos;
   }
@@ -25,14 +51,14 @@ function loadTodoItems() {
 
 function addTodoItem(value) {
   if (value.trim() == "") {
-    showMessage("Item can't be empty", "error");
+    showMessage(ERROR_MESSAGES_EMPTY.text, ERROR_MESSAGES_EMPTY.status);
     return;
   }
 
   if (!itemValues.includes(value)) {
     itemValues.push(value);
   } else {
-    showMessage("Item already exists", "error");
+    showMessage(ERROR_MESSAGES_EMPTY.text, ERROR_MESSAGES_EMPTY.status);
     return;
   }
 
@@ -68,7 +94,7 @@ function removeTodoItem(button, value) {
     button.parentElement.remove();
     const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
     itemValues = newItemValues;
-    showMessage("Item removed", "success")
+    showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status)
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(itemValues));
   });
 }
