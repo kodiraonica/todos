@@ -31,18 +31,18 @@ function loadTodoItems() {
 
 function addTodoItem(value) {
     if (value.trim() == ""){
-        showMessage("Item can't be empty");
+        showMessage("Item can't be empty", "error");
         return;
     }
 
     if (!itemValues.includes(value)) {
         itemValues.push(value)
     } else {
-        showMessage("Item already exists");
+        showMessage("Item already exists", "error");
         return; 
     }
 
-    localStorage.setItem("todos",JSON.stringify(itemValues));
+    localStorage.setItem(LOCAL_STORAGE_KEY,JSON.stringify(itemValues));
     const button = createRemoveButton(value);
     removeTodoItem(button,value);
     createListItem(button,value);
