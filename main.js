@@ -51,6 +51,7 @@ async function loadTodoItems() {
    await fetch(`${API_URL}/todos`)
     .then((response) => response.json())
     .then((json) => itemValues = json.slice(0,4))
+    .catch((err) => console.log(err))
 
     if (itemValues.length > 0) {
         itemValues.forEach((todoValue) => {
@@ -82,8 +83,6 @@ async function addTodoItem(value) {
         showMessage(ERROR_MESSAGE_EMPTY.text, ERROR_MESSAGE_EMPTY.status);
         return;
     }
-
-    itemValues.push(value);
     await fetch(`${API_URL}/todo`, {
         method: 'POST',
         body: JSON.stringify({
@@ -94,10 +93,14 @@ async function addTodoItem(value) {
         },
     })
     .then((response) => response.json())
-    .then((json) => button = createRemoveButton(json._id))
-    .then(() => showMessage(SUCCESS_MESSAGE_ITEM_ADDED.text, SUCCESS_MESSAGE_ITEM_ADDED.status))
-    .then(() => removeTodoItem(button, button.getAttribute("id")))
-    .then(() => createListItem(button, value))
+    .then((json) => {
+        itemValues.push(value);
+        button = createRemoveButton(json._id)
+        showMessage(SUCCESS_MESSAGE_ITEM_ADDED.text, SUCCESS_MESSAGE_ITEM_ADDED.status);
+        removeTodoItem(button, button.getAttribute("id"));
+        createListItem(button, value);
+    })
+    .catch((err) => console.log(err))
 
     resetForm();
 }
