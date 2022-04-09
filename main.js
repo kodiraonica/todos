@@ -9,11 +9,11 @@ const messages = {
   },
   SUCCESS_MESSAGE_ITEMS_LOADED: {
     text: "Items loaded",
-    status: "sucess"
+    status: "success"
   },
   SUCCESS_MESSAGE_ITEM_REMOVED: {
-    text: "Items loaded",
-    status: "sucess"
+    text: "Items removed",
+    status: "success"
   }
 }
 
