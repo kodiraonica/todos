@@ -14,10 +14,10 @@ function loadTodoItems() {
   const todos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
   if (todos) {
     todos.forEach((todoItem) => {
-      const button = document.createRemoveButton("todoItem");
+      const button = createRemoveButton("todoItem");
       createListItem(button, todoItem);
       removeTodoItem(button, todoItem);
-      showMessage("Items loades", "success")
+      showMessage("Items loaded", "success")
     });
     itemValues = todos;
   }
@@ -87,5 +87,5 @@ function showMessage(message, status) {
   div.innerHTML = message;
   setTimeout(() => {
     div.remove();
-  }, 300000);
+  }, 3000);
 }
