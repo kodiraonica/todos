@@ -1,32 +1,37 @@
 const messages = {
   ERROR_MESSAGES_EMPTY: {
     text: "Item can't be empty",
-    status: 'error'
+    status: "error",
   },
   ERROR_MESSAGES_ALREADY_EXIST: {
     text: "Item already exists",
-    status: "error"
+    status: "error",
   },
-  SUCCESS_MESSAGE_ITEMS_LOADED: {
-    text: "Items loaded",
-    status: "success"
+  SUCCESS_MESSAGE_ITEM_LOADED: {
+    text: "Item loaded",
+    status: "success",
   },
   SUCCESS_MESSAGE_ITEM_REMOVED: {
-    text: "Items removed",
-    status: "success"
-  }
-}
+    text: "Item removed",
+    status: "success",
+  },
+  SUCCESS_MESSAGE_ITEM_ADDED: {
+    text: "Item added",
+    status: "success",
+  },
+};
 
 const {
   ERROR_MESSAGES_EMPTY,
   ERROR_MESSAGES_ALREADY_EXIST,
-  SUCCESS_MESSAGE_ITEMS_LOADED,
-  SUCCESS_MESSAGE_ITEM_REMOVED
+  SUCCESS_MESSAGE_ITEM_LOADED,
+  SUCCESS_MESSAGE_ITEM_REMOVED,
+  SUCCESS_MESSAGE_ITEM_ADDED,
 } = messages;
 
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
-const LOCAL_STORAGE_KEY = "todos"
+const LOCAL_STORAGE_KEY = "todos";
 let itemValues = [];
 
 loadTodoItems();
@@ -43,7 +48,10 @@ function loadTodoItems() {
       const button = createRemoveButton("todoItem");
       createListItem(button, todoItem);
       removeTodoItem(button, todoItem);
-      showMessage(SUCCESS_MESSAGE_ITEMS_LOADED.text, SUCCESS_MESSAGE_ITEMS_LOADED.status)
+      showMessage(
+        SUCCESS_MESSAGE_ITEM_LOADED.text,
+        SUCCESS_MESSAGE_ITEM_LOADED.status
+      );
     });
     itemValues = todos;
   }
@@ -63,6 +71,7 @@ function addTodoItem(value) {
   }
 
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(itemValues));
+  showMessage(SUCCESS_MESSAGE_ITEM_ADDED.text, SUCCESS_MESSAGE_ITEM_ADDED.status);
   const button = createRemoveButton(value);
   createListItem(button, value);
   removeTodoItem(button, value);
@@ -94,7 +103,10 @@ function removeTodoItem(button, value) {
     button.parentElement.remove();
     const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
     itemValues = newItemValues;
-    showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status)
+    showMessage(
+      SUCCESS_MESSAGE_ITEM_REMOVED.text,
+      SUCCESS_MESSAGE_ITEM_REMOVED.status
+    );
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(itemValues));
   });
 }
