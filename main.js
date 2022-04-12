@@ -19,6 +19,10 @@ const messages = {
     text: "Item added",
     status: "success",
   },
+  EMPTY_TODOS: {
+    text: "You don't have any todos yet! Add some",
+    status: "success",
+  },
 };
 
 const {
@@ -27,11 +31,13 @@ const {
   SUCCESS_MESSAGE_ITEM_LOADED,
   SUCCESS_MESSAGE_ITEM_REMOVED,
   SUCCESS_MESSAGE_ITEM_ADDED,
+  EMPTY_TODOS,
 } = messages;
 
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const LOCAL_STORAGE_KEY = "todos";
+const API_URL = "https://kodiraonica-todos.herokuapp.com/api";
 let itemValues = [];
 
 loadTodoItems();
@@ -42,9 +48,13 @@ button.addEventListener("click", function (e) {
 });
 
 function loadTodoItems() {
-  const todos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-  if (todos) {
-    todos.forEach((todoItem) => {
+  fetch(`${API_URL}/todos`)
+    .then((response) => response.json())
+    .then((res) => (itemValues = res))
+    .catch((err) => console.log(err));
+
+  if (itemValues.length > 0) {
+    itemValues.forEach((todoItem) => {
       const button = createRemoveButton("todoItem");
       createListItem(button, todoItem);
       removeTodoItem(button, todoItem);
@@ -53,7 +63,8 @@ function loadTodoItems() {
         SUCCESS_MESSAGE_ITEM_LOADED.status
       );
     });
-    itemValues = todos;
+  } else {
+    showMessage(EMPTY_TODOS.text, EMPTY_TODOS.status);
   }
 }
 
@@ -71,7 +82,10 @@ function addTodoItem(value) {
   }
 
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(itemValues));
-  showMessage(SUCCESS_MESSAGE_ITEM_ADDED.text, SUCCESS_MESSAGE_ITEM_ADDED.status);
+  showMessage(
+    SUCCESS_MESSAGE_ITEM_ADDED.text,
+    SUCCESS_MESSAGE_ITEM_ADDED.status
+  );
   const button = createRemoveButton(value);
   createListItem(button, value);
   removeTodoItem(button, value);
