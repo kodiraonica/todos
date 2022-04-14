@@ -74,6 +74,7 @@ async function loadTodoItems() {
 }
 
 async function addTodoItem(value) {
+  let button;
   if (value.trim() == "") {
     showMessage(ERROR_MESSAGES_EMPTY.text, ERROR_MESSAGES_EMPTY.status);
     return;
@@ -92,7 +93,7 @@ async function addTodoItem(value) {
       title: value,
     }),
     headers: {
-      "Content-type": "application/json, charset=UTF-8",
+      "Content-type": "application/json; charset=UTF-8",
     },
   })
     .then((response) => response.json())
@@ -118,7 +119,7 @@ function resetForm() {
 function createRemoveButton(value) {
   const button = document.createElement("button");
   button.innerHTML = "remove";
-  button.setAttribute("id", `removeBtn-${value.trim().replaceAll(" ", "")}`);
+  button.setAttribute("id", `removeBtn-${value}`);
   return button;
 }
 
