@@ -96,13 +96,13 @@ async function addTodoItem(value) {
   }
 
   await fetch(`${API_URL}/todo`, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
-      title: value,
+        title: value
     }),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
-    },
+    }
   })
     .then((response) => response.json())
     .then((json) => {
