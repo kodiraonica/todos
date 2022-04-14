@@ -87,7 +87,7 @@ async function addTodoItem(value) {
     return;
   }
 
-  if (!todoAlreadyExists.length > 0) {
+  if (todoAlreadyExists.length > 0) {
     showMessage(
       ERROR_MESSAGE_ALREADY_EXISTS.text,
       ERROR_MESSAGE_ALREADY_EXISTS.status
@@ -108,7 +108,7 @@ async function addTodoItem(value) {
     .then((json) => {
       itemValues.push(json);
       button = createRemoveButton(json._id);
-      createListItem(button, value);
+      createListItem(button, json.title);
       removeTodoItem(button, json._id);
       showMessage(
         SUCCESS_MESSAGE_ITEM_ADDED.text,
