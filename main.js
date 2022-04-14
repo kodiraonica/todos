@@ -3,7 +3,7 @@ const messages = {
     text: "Item can't be empty",
     status: "error",
   },
-  ERROR_MESSAGES_ALREADY_EXIST: {
+  ERROR_MESSAGE_ALREADY_EXISTS: {
     text: "Item already exists",
     status: "error",
   },
@@ -31,7 +31,7 @@ const messages = {
 
 const {
   ERROR_MESSAGES_EMPTY,
-  ERROR_MESSAGES_ALREADY_EXIST,
+  ERROR_MESSAGE_ALREADY_EXISTS,
   SUCCESS_MESSAGE_ITEM_LOADED,
   SUCCESS_MESSAGE_ITEM_REMOVED,
   SUCCESS_MESSAGE_ITEM_ADDED,
@@ -74,17 +74,24 @@ async function loadTodoItems() {
 }
 
 async function addTodoItem(value) {
-  console.log(value)
   let button;
-  if (value.trim() == "") {
+  const isTodoEmpty = value.trim() == "";
+  const todoAlreadyExists = itemValues.filter((itemValue) => {
+    if (itemValue.title == value) {
+      return true;
+    }
+  });
+
+  if (isTodoEmpty) {
     showMessage(ERROR_MESSAGES_EMPTY.text, ERROR_MESSAGES_EMPTY.status);
     return;
   }
 
-  if (!itemValues.includes(value)) {
-    itemValues.push(value);
-  } else {
-    showMessage(ERROR_MESSAGES_EMPTY.text, ERROR_MESSAGES_EMPTY.status);
+  if (todoAlreadyExists.length > 0) {
+    showMessage(
+      ERROR_MESSAGE_ALREADY_EXISTS.text,
+      ERROR_MESSAGE_ALREADY_EXISTS.status
+    );
     return;
   }
 
@@ -94,14 +101,14 @@ async function addTodoItem(value) {
         title: value
     }),
     headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-  },
+      "Content-type": "application/json; charset=UTF-8",
+    }
   })
     .then((response) => response.json())
     .then((json) => {
       itemValues.push(json);
       button = createRemoveButton(json._id);
-      createListItem(button, value);
+      createListItem(button, json.title);
       removeTodoItem(button, json._id);
       showMessage(
         SUCCESS_MESSAGE_ITEM_ADDED.text,
