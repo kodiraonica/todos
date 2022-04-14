@@ -73,14 +73,18 @@ async function loadTodoItems() {
 }
     
 async function addTodoItem(value) {
-    if (value.trim() == "") {
+    let button;
+    const isTodoEmpty = value.trim() == "";
+    const todoAlreadyExists = itemValues.filter((itemValue) => {
+        if(itemValue.title == value) {
+            return true;
+        }
+    })
+    if(isTodoEmpty) {
         showMessage(ERROR_MESSAGE_EMPTY.text, ERROR_MESSAGE_EMPTY.status);
-        return;
+        return
     }
-
-    if (!itemValues.includes(value)) {
-        itemValues.push(value);
-    } else {
+    if(todoAlreadyExists.length > 0) {
         showMessage(ERROR_MESSAGE_ALREDY_EXISTS.text, ERROR_MESSAGE_ALREDY_EXISTS.status);
         return;
     }
@@ -99,7 +103,7 @@ async function addTodoItem(value) {
     .then((json) => {
         itemValues.push(value);
         const button = createRemoveButton(json._id);
-        createListItem(button,value);
+        createListItem(button,json.title);
         removeTodoItem(button,json._id);
         showMessage(SUCCESS_MESSAGE_ITEM_CREATED.text,SUCCESS_MESSAGE_ITEM_CREATED.status);
         resetForm();
