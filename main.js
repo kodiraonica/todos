@@ -22,7 +22,11 @@ const messages = {
     EMPTY_TODOS: {
         text:"You don't have any todos yet: Add some",
         status:"success"
-    }
+    },
+    ERROR_MESSAGE_SMTH_WENT_WRONG: {
+        text:"Something went wrong",
+        status: "error"
+    },
 };
 
 const {
@@ -31,7 +35,8 @@ const {
     SUCCESS_MESSAGE_ITEMS_LOADED,
     SUCCESS_MESSAGE_ITEM_CREATED,
     SUCCESS_MESSAGE_ITEM_REMOVED,
-    EMPTY_TODOS
+    EMPTY_TODOS,
+    ERROR_MESSAGE_SMTH_WENT_WRONG
 } = messages;
 
 const button = document.getElementById("add");
@@ -54,9 +59,9 @@ async function loadTodoItems() {
 
     if (itemValues, length > 0) {
         itemValues.forEach((todoItem)=>{
-            const button = createRemoveButton(todoItem);
+            const button = createRemoveButton(todoItem._id);
             createListItem(button, todoItem.title);
-            removeTodoItem(button, todoItem); 
+            removeTodoItem(button, todoItem._id); 
             showMessage (
                 SUCCESS_MESSAGE_ITEMS_LOADED.text,
                 SUCCESS_MESSAGE_ITEMS_LOADED.status 
@@ -91,11 +96,11 @@ async function addTodoItem(value) {
     })
 
     .then ((response)=>response.json())
-    .then(() => {
+    .then((json) => {
         itemValues.push(value);
-        const button = createRemoveButton(value);
+        const button = createRemoveButton(json._id);
         createListItem(button,value);
-        removeTodoItem(button,value);
+        removeTodoItem(button,json._id);
         showMessage(SUCCESS_MESSAGE_ITEM_CREATED.text,SUCCESS_MESSAGE_ITEM_CREATED.status);
         resetForm();
     })
@@ -107,12 +112,12 @@ function resetForm() {
     form.reset();
 }
 
-function createRemoveButton(value) {
+function createRemoveButton(id) {
     const button = document.createElement("button");
     button.innerHTML = "remove";
     button.setAttribute(
         "id", 
-        `removeBtn-${value.trim().replaceAll(" ", "")}`);
+        `removeBtn-${id}`);
         return button;
 }
 
@@ -124,13 +129,27 @@ function createListItem(button, value) {
     li.appendChild(button);
 }
 
-function removeTodoItem(button, value) {
-    button.addEventListener("click", function() {
-        button.parentElement.remove();
-        const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
-        itemValues = newItemValues;
-        showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newItemValues));
+function removeTodoItem(button, id) {
+    button.addEventListener("click", async function() {
+        console.log(itemValues)
+        console.log(id)
+        await fetch (`${API_URL}/delete/${id}`,{
+        method: "DELETE"
+    })
+        .then((response) => {
+            if(response.status == 200) {
+                button.parentElement.remove();
+                const newItemValues = itemValues.filter((itemValue) => itemValue._id !== id);
+                console.log(newItemValues)  
+                itemValues = newItemValues;
+                showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status);
+            } else {
+            showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status);
+        }
+            
+        })
+    
+        
     });
 }
 
