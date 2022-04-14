@@ -23,6 +23,10 @@ const messages = {
     text: "You don't have any todos yet! Add some",
     status: "success",
   },
+  ERROR_MESSAGE_SMTH_WENT_WRONG: {
+    text: "Something went wrong",
+    status: "error",
+  },
 };
 
 const {
@@ -32,6 +36,7 @@ const {
   SUCCESS_MESSAGE_ITEM_REMOVED,
   SUCCESS_MESSAGE_ITEM_ADDED,
   EMPTY_TODOS,
+  ERROR_MESSAGE_SMTH_WENT_WRONG,
 } = messages;
 
 const button = document.getElementById("add");
@@ -55,9 +60,9 @@ async function loadTodoItems() {
 
   if (itemValues.length > 0) {
     itemValues.forEach((todoItem) => {
-      const button = createRemoveButton("todoItem");
+      const button = createRemoveButton(todoItem._id);
       createListItem(button, todoItem.title);
-      removeTodoItem(button, todoItem);
+      removeTodoItem(button, todoItem._id);
       showMessage(
         SUCCESS_MESSAGE_ITEM_LOADED.text,
         SUCCESS_MESSAGE_ITEM_LOADED.status
@@ -81,28 +86,28 @@ async function addTodoItem(value) {
     return;
   }
 
-await fetch(`${API_URL}/todo`, {
+  await fetch(`${API_URL}/todo`, {
     method: "POST",
     body: JSON.stringify({
-      title: value
+      title: value,
     }),
     headers: {
-      'Content-type': 'application/json, charset=UTF-8',
-    }
-})
+      "Content-type": "application/json, charset=UTF-8",
+    },
+  })
     .then((response) => response.json())
-  .then(() => {
-      itemValues.push(value);
-      const button = createRemoveButton(value);
+    .then((json) => {
+      itemValues.push(json);
+      button = createRemoveButton(json._id);
       createListItem(button, value);
-      removeTodoItem(button, value);
+      removeTodoItem(button, json._id);
       showMessage(
         SUCCESS_MESSAGE_ITEM_ADDED.text,
         SUCCESS_MESSAGE_ITEM_ADDED.status
       );
       resetForm();
-})
-    .catch ((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
 }
 
 function resetForm() {
@@ -125,16 +130,28 @@ function createListItem(button, value) {
   li.appendChild(button);
 }
 
-function removeTodoItem(button, value) {
-  button.addEventListener("click", function () {
-    button.parentElement.remove();
-    const newItemValues = itemValues.filter((itemValue) => itemValue !== value);
-    itemValues = newItemValues;
-    showMessage(
-      SUCCESS_MESSAGE_ITEM_REMOVED.text,
-      SUCCESS_MESSAGE_ITEM_REMOVED.status
-    );
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(itemValues));
+function removeTodoItem(button, id) {
+  button.addEventListener("click", async function () {
+    await fetch(`${API_URL}/delete/${id}`, {
+      method: "DELETE",
+    }).then((response) => {
+      if (response.status == 200) {
+        button.parentElement.remove();
+        const newItemValues = itemValues.filter(
+          (itemValue) => itemValue._id !== id
+        );
+        itemValues = newItemValues;
+        showMessage(
+          SUCCESS_MESSAGE_ITEM_REMOVED.text,
+          SUCCESS_MESSAGE_ITEM_REMOVED.status
+        );
+      } else {
+        showMessage(
+          ERROR_MESSAGE_SMTH_WENT_WRONG.text,
+          ERROR_MESSAGE_SMTH_WENT_WRONG.status
+        );
+      }
+    });
   });
 }
 
