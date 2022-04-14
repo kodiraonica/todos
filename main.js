@@ -47,8 +47,8 @@ button.addEventListener("click", function (e) {
   addTodoItem(input.value);
 });
 
-function loadTodoItems() {
-  fetch(`${API_URL}/todos`)
+async function loadTodoItems() {
+  await fetch(`${API_URL}/todos`)
     .then((response) => response.json())
     .then((res) => (itemValues = res))
     .catch((err) => console.log(err));
@@ -56,7 +56,7 @@ function loadTodoItems() {
   if (itemValues.length > 0) {
     itemValues.forEach((todoItem) => {
       const button = createRemoveButton("todoItem");
-      createListItem(button, todoItem);
+      createListItem(button, todoItem.title);
       removeTodoItem(button, todoItem);
       showMessage(
         SUCCESS_MESSAGE_ITEM_LOADED.text,
@@ -68,7 +68,7 @@ function loadTodoItems() {
   }
 }
 
-function addTodoItem(value) {
+async function addTodoItem(value) {
   if (value.trim() == "") {
     showMessage(ERROR_MESSAGES_EMPTY.text, ERROR_MESSAGES_EMPTY.status);
     return;
@@ -81,15 +81,28 @@ function addTodoItem(value) {
     return;
   }
 
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(itemValues));
-  showMessage(
-    SUCCESS_MESSAGE_ITEM_ADDED.text,
-    SUCCESS_MESSAGE_ITEM_ADDED.status
-  );
-  const button = createRemoveButton(value);
-  createListItem(button, value);
-  removeTodoItem(button, value);
-  resetForm();
+await fetch(`${API_URL}/todo`, {
+    method: "POST",
+    body: JSON.stringify({
+      title: value
+    }),
+    headers: {
+      'Content-type': 'application/json, charset=UTF-8',
+    }
+})
+    .then((response) => response.json())
+  .then(() => {
+      itemValues.push(value);
+      const button = createRemoveButton(value);
+      createListItem(button, value);
+      removeTodoItem(button, value);
+      showMessage(
+        SUCCESS_MESSAGE_ITEM_ADDED.text,
+        SUCCESS_MESSAGE_ITEM_ADDED.status
+      );
+      resetForm();
+})
+    .catch ((err) => console.log(err));
 }
 
 function resetForm() {
