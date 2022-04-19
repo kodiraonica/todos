@@ -52,24 +52,27 @@ button.addEventListener("click", function (e) {
 });
 
 async function loadTodoItems() {
-    await fetch(`${API_URL}/todos`)
-    .then ((response)=>response.json())
-    .then((res)=>itemValues = res)
-    .catch((err)=> console.log(err));
-
-    if (itemValues, length > 0) {
-        itemValues.forEach((todoItem)=>{
-            const button = createRemoveButton(todoItem._id);
-            createListItem(button, todoItem.title);
-            removeTodoItem(button, todoItem._id); 
-            showMessage (
-                SUCCESS_MESSAGE_ITEMS_LOADED.text,
-                SUCCESS_MESSAGE_ITEMS_LOADED.status 
-            );   
-        });
-    } else {
-        showMessage(EMPTY_TODOS.text, EMPTY_TODOS.status);
+    try {
+        const response = await fetch(`${API_URL}/todos`)
+        const data = await response.json();
+        itemValues = data; 
+        if (itemValues, length > 0) {
+            itemValues.forEach((todoItem)=>{
+                const button = createRemoveButton(todoItem._id);
+                createListItem(button, todoItem.title);
+                removeTodoItem(button, todoItem._id); 
+                showMessage (
+                    SUCCESS_MESSAGE_ITEMS_LOADED.text,
+                    SUCCESS_MESSAGE_ITEMS_LOADED.status 
+                );   
+            });
+        } else {
+            showMessage(EMPTY_TODOS.text, EMPTY_TODOS.status);
+        }
+    } catch (err) {
+        console.log(err);
     }
+
 }
     
 async function addTodoItem(value) {
