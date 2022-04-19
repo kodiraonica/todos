@@ -1,7 +1,6 @@
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const LOCAL_STORAGE_KEY = "todos";
-const API_URL = "https://kodiraonica-todos.herokuapp.com/api";
 let itemValues = [];
 
 loadTodoItems();
@@ -103,9 +102,7 @@ function createListItem(button, value) {
 
 function removeTodoItem(button, id) {
   button.addEventListener("click", async function () {
-    const response = await fetch(`${API_URL}/delete/${id}`, {
-      method: "DELETE",
-    });
+    const response = await removeTodo(id);
     try {
       if (response.status == 200) {
         button.parentElement.remove();
