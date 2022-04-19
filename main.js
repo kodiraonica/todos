@@ -53,7 +53,7 @@ button.addEventListener("click", function (e) {
 });
 
 async function loadTodoItems() {
-  await fetch(`${API_URL}/todos`)
+  const response = await fetch(`${API_URL}/todos`)
     .then((response) => response.json())
     .then((res) => (itemValues = res))
     .catch((err) => console.log(err));
@@ -95,28 +95,29 @@ async function addTodoItem(value) {
     return;
   }
 
-  await fetch(`${API_URL}/todo`, {
-    method: 'POST',
-    body: JSON.stringify({
-        title: value
-    }),
-    headers: {
-      "Content-type": "application/json; charset=UTF-8",
-    }
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      itemValues.push(json);
-      button = createRemoveButton(json._id);
-      createListItem(button, json.title);
-      removeTodoItem(button, json._id);
-      showMessage(
-        SUCCESS_MESSAGE_ITEM_ADDED.text,
-        SUCCESS_MESSAGE_ITEM_ADDED.status
-      );
-      resetForm();
-    })
-    .catch((err) => console.log(err));
+  try {
+    const response = await fetch(`${API_URL}/todo`, {
+      method: "POST",
+      body: JSON.stringify({
+        title: value,
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+    const data = await response.json();
+    itemValues.push(data);
+    button = createRemoveButton(data._id);
+    createListItem(button, data.title);
+    removeTodoItem(button, data._id);
+    showMessage(
+      SUCCESS_MESSAGE_ITEM_ADDED.text,
+      SUCCESS_MESSAGE_ITEM_ADDED.status
+    );
+    resetForm();
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 function resetForm() {
@@ -141,7 +142,7 @@ function createListItem(button, value) {
 
 function removeTodoItem(button, id) {
   button.addEventListener("click", async function () {
-    await fetch(`${API_URL}/delete/${id}`, {
+    const response = await fetch(`${API_URL}/delete/${id}`, {
       method: "DELETE",
     });
     try {
@@ -162,7 +163,10 @@ function removeTodoItem(button, id) {
         );
       }
     } catch (err) {
-      showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status)
+      showMessage(
+        ERROR_MESSAGE_SMTH_WENT_WRONG.text,
+        ERROR_MESSAGE_SMTH_WENT_WRONG.status
+      );
     }
   });
 }
