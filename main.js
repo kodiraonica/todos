@@ -143,7 +143,8 @@ function removeTodoItem(button, id) {
   button.addEventListener("click", async function () {
     await fetch(`${API_URL}/delete/${id}`, {
       method: "DELETE",
-    }).then((response) => {
+    });
+    try {
       if (response.status == 200) {
         button.parentElement.remove();
         const newItemValues = itemValues.filter(
@@ -160,7 +161,9 @@ function removeTodoItem(button, id) {
           ERROR_MESSAGE_SMTH_WENT_WRONG.status
         );
       }
-    });
+    } catch (err) {
+      showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status)
+    }
   });
 }
 
