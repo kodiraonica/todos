@@ -2,7 +2,6 @@
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const LOCAL_STORAGE_KEY = "todos";
-const API_URL= "https://kodiraonica-todos.herokuapp.com/api"
 let itemValues = [];
 loadTodoItems();
 
@@ -13,7 +12,7 @@ button.addEventListener("click", function (e) {
 
 async function loadTodoItems() {
     try {
-        const response = await fetch(`${API_URL}/todos`)
+        const response = await gettAllTodos();
         const data = await response.json();
         itemValues = data; 
         if (itemValues, length > 0) {
@@ -53,15 +52,7 @@ async function addTodoItem(value) {
     }
 
     try {
-        const response = await fetch (`${API_URL}/todo`, {
-            method:"POST",
-            body: JSON.stringify({
-                title:value
-            }),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                }
-        })
+        const response = await createTodo(value);
         const data = await response.json();
         itemValues.push(data);
         const button = createRemoveButton(data._id);
@@ -100,20 +91,17 @@ function createListItem(button, value) {
 
 function removeTodoItem(button, id) {
     button.addEventListener("click", async function() {
-    const response = await fetch (`${API_URL}/delete/${id}`,{
-        method: "DELETE"
-    });
+    const response = await removeTodo(id);
     try {
         if(response.status == 200) {
             button.parentElement.remove();
             const newItemValues = itemValues.filter((itemValue) => itemValue._id !== id);
             itemValues = newItemValues;
             showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status);
-    } else {
+        } else {
         showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status);
         };
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
          }
     });
