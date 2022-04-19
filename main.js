@@ -1,48 +1,6 @@
-const messages = {
-  ERROR_MESSAGES_EMPTY: {
-    text: "Item can't be empty",
-    status: "error",
-  },
-  ERROR_MESSAGE_ALREADY_EXISTS: {
-    text: "Item already exists",
-    status: "error",
-  },
-  SUCCESS_MESSAGE_ITEM_LOADED: {
-    text: "Item loaded",
-    status: "success",
-  },
-  SUCCESS_MESSAGE_ITEM_REMOVED: {
-    text: "Item removed",
-    status: "success",
-  },
-  SUCCESS_MESSAGE_ITEM_ADDED: {
-    text: "Item added",
-    status: "success",
-  },
-  EMPTY_TODOS: {
-    text: "You don't have any todos yet! Add some",
-    status: "success",
-  },
-  ERROR_MESSAGE_SMTH_WENT_WRONG: {
-    text: "Something went wrong",
-    status: "error",
-  },
-};
-
-const {
-  ERROR_MESSAGES_EMPTY,
-  ERROR_MESSAGE_ALREADY_EXISTS,
-  SUCCESS_MESSAGE_ITEM_LOADED,
-  SUCCESS_MESSAGE_ITEM_REMOVED,
-  SUCCESS_MESSAGE_ITEM_ADDED,
-  EMPTY_TODOS,
-  ERROR_MESSAGE_SMTH_WENT_WRONG,
-} = messages;
-
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const LOCAL_STORAGE_KEY = "todos";
-const API_URL = "https://kodiraonica-todos.herokuapp.com/api";
 let itemValues = [];
 
 loadTodoItems();
@@ -54,7 +12,7 @@ button.addEventListener("click", function (e) {
 
 async function loadTodoItems() {
   try {
-    const response = await fetch(`${API_URL}/todos`);
+    const response = await getAllTodos();
     const data = await response.json();
     itemValues = data;
     if (itemValues.length > 0) {
@@ -98,27 +56,19 @@ async function addTodoItem(value) {
   }
 
   try {
-    const response = await fetch(`${API_URL}/todo`, {
-      method: "POST",
-      body: JSON.stringify({
-        title: value,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
-    const data = await response.json();
-    itemValues.push(data);
-    button = createRemoveButton(data._id);
-    createListItem(button, data.title);
-    removeTodoItem(button, data._id);
+    const response = await saveTodoItem(value);
+    const newTodoItem = await response.json();
+    const button = createRemoveButton(newTodoItem._id);
+    itemValues.push(newTodoItem);
     showMessage(
       SUCCESS_MESSAGE_ITEM_ADDED.text,
       SUCCESS_MESSAGE_ITEM_ADDED.status
     );
+    removeTodoItem(button, newTodoItem._id);
+    createListItem(button, newTodoItem.title);
     resetForm();
   } catch (e) {
-    console.log(e);
+    showMessage(e, "error");
   }
 }
 
@@ -144,9 +94,7 @@ function createListItem(button, value) {
 
 function removeTodoItem(button, id) {
   button.addEventListener("click", async function () {
-    const response = await fetch(`${API_URL}/delete/${id}`, {
-      method: "DELETE",
-    });
+    const response = await removeTodo(id);
     try {
       if (response.status == 200) {
         button.parentElement.remove();
