@@ -89,27 +89,29 @@ async function addTodoItem(value) {
         return;
     }
 
-    await fetch (`${API_URL}/todo`, {
-        method:"POST",
-        body: JSON.stringify({
-            title:value
-        }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            }
-    })
-
-    .then ((response)=>response.json())
-    .then((json) => {
-        itemValues.push(json);
-        const button = createRemoveButton(json._id);
-        createListItem(button,json.title);
-        removeTodoItem(button,json._id);
+    try {
+        const response = await fetch (`${API_URL}/todo`, {
+            method:"POST",
+            body: JSON.stringify({
+                title:value
+            }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                }
+        })
+        const data = await response.json();
+        itemValues.push(data);
+        const button = createRemoveButton(data._id);
+        createListItem(button,data.title);
+        removeTodoItem(button,data._id);
         showMessage(SUCCESS_MESSAGE_ITEM_CREATED.text,SUCCESS_MESSAGE_ITEM_CREATED.status);
         resetForm();
-    })
-    .catch((err) => console.log(err));
+    }
+    catch (err){
+        console.log(err)
+    }
 }
+
 
 function resetForm() {
     const form = document.getElementsByTagName("form")[0];
@@ -139,18 +141,18 @@ function removeTodoItem(button, id) {
         method: "DELETE"
     });
     try {
-            if(response.status == 200) {
-                button.parentElement.remove();
-                const newItemValues = itemValues.filter((itemValue) => itemValue._id !== id);
-                itemValues = newItemValues;
-                showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status);
-            } else {
-            showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status);
+        if(response.status == 200) {
+            button.parentElement.remove();
+            const newItemValues = itemValues.filter((itemValue) => itemValue._id !== id);
+            itemValues = newItemValues;
+            showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status);
+    } else {
+        showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status);
         };
     }
-            catch (err) {
-                console.log(err);
-            }
+    catch (err) {
+        console.log(err);
+         }
     });
 }
 
