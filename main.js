@@ -12,7 +12,7 @@ button.addEventListener("click", function (e) {
 
 async function loadTodoItems() {
   try {
-    const response = await fetch(`${API_URL}/todos`);
+    const response = await getAllTodos();
     const data = await response.json();
     itemValues = data;
     if (itemValues.length > 0) {
@@ -56,27 +56,19 @@ async function addTodoItem(value) {
   }
 
   try {
-    const response = await fetch(`${API_URL}/todo`, {
-      method: "POST",
-      body: JSON.stringify({
-        title: value,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
-    const data = await response.json();
-    itemValues.push(data);
-    button = createRemoveButton(data._id);
-    createListItem(button, data.title);
-    removeTodoItem(button, data._id);
+    const response = await saveTodoItem(value);
+    const newTodoItem = await response.json();
+    const button = createRemoveButton(newTodoItem._id);
+    itemValues.push(newTodoItem);
     showMessage(
       SUCCESS_MESSAGE_ITEM_ADDED.text,
       SUCCESS_MESSAGE_ITEM_ADDED.status
     );
+    removeTodoItem(button, newTodoItem._id);
+    createListItem(button, newTodoItem.title);
     resetForm();
   } catch (e) {
-    console.log(e);
+    showMessage(e, "error");
   }
 }
 
