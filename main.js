@@ -106,7 +106,7 @@ async function addTodoItem(value) {
       },
     });
     const data = await response.json();
-    itemValues.push(json);
+    itemValues.push(data);
     button = createRemoveButton(data._id);
     createListItem(button, data.title);
     removeTodoItem(button, data._id);
