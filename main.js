@@ -101,7 +101,7 @@ async function addTodoItem(value) {
 
     .then ((response)=>response.json())
     .then((json) => {
-        itemValues.push(value);
+        itemValues.push(json);
         const button = createRemoveButton(json._id);
         createListItem(button,json.title);
         removeTodoItem(button,json._id);
@@ -135,25 +135,22 @@ function createListItem(button, value) {
 
 function removeTodoItem(button, id) {
     button.addEventListener("click", async function() {
-        console.log(itemValues)
-        console.log(id)
-        await fetch (`${API_URL}/delete/${id}`,{
+    const response = await fetch (`${API_URL}/delete/${id}`,{
         method: "DELETE"
-    })
-        .then((response) => {
+    });
+    try {
             if(response.status == 200) {
                 button.parentElement.remove();
                 const newItemValues = itemValues.filter((itemValue) => itemValue._id !== id);
-                console.log(newItemValues)  
                 itemValues = newItemValues;
                 showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status);
             } else {
             showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status);
-        }
-            
-        })
-    
-        
+        };
+    }
+            catch (err) {
+                console.log(err);
+            }
     });
 }
 
