@@ -1,44 +1,3 @@
-const messages = {
-    ERROR_MESSAGE_EMPTY: {
-        text: "Item can't be empty",
-        status: "error"
-    },
-    ERROR_MESSAGE_ALREDY_EXISTS: {
-        text: "Item already exists",
-        status: "error"
-    },
-    SUCCESS_MESSAGE_ITEMS_LOADED: {
-        text: "Item loaded",
-        status: "success"
-    },
-    SUCCESS_MESSAGE_ITEM_CREATED: {
-        text: "Item created",
-        status: "success"
-    },
-    SUCCESS_MESSAGE_ITEM_REMOVED: {
-        text: "Item removed",
-        status: "success"
-    },
-    EMPTY_TODOS: {
-        text: "You don't have any todos yet: Add some",
-        status: "success"
-    },
-    ERROR_MESSAGE_SMTH_WENT_WRONG: {
-        text: "Something went wrong",
-        status: "error"
-    },
-};
-
-const {
-    ERROR_MESSAGE_EMPTY,
-    ERROR_MESSAGE_ALREDY_EXISTS,
-    SUCCESS_MESSAGE_ITEMS_LOADED,
-    SUCCESS_MESSAGE_ITEM_CREATED,
-    SUCCESS_MESSAGE_ITEM_REMOVED,
-    EMPTY_TODOS,
-    ERROR_MESSAGE_SMTH_WENT_WRONG
-} = messages;
-
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const LOCAL_STORAGE_KEY = "todos";
@@ -56,7 +15,6 @@ async function loadTodoItems() {
         const response = await getAllTodos();
         const data = await response.json();
         itemValues = data;
-
         if (itemValues, length > 0) {
             itemValues.forEach((todoItem) => {
                 const button = createRemoveButton(todoItem._id);
@@ -91,7 +49,7 @@ async function addTodoItem(value) {
     }
 
     try {
-        const response = await saveTodoItem(value);
+        const response = await createTodo(value);
         const data = await response.json();
         itemValues.push(data);
         const button = createRemoveButton(data._id);
@@ -130,7 +88,7 @@ function createListItem(button, value) {
 function removeTodoItem(button, id) {
     button.addEventListener("click", async function() {
         try {
-            await deleteTodoItem(id);
+            await removeTodo(id);
             button.parentElement.remove();
             const newItemValues = itemValues.filter((item) => item._id !== id);
             itemValues = newItemValues;

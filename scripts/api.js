@@ -1,10 +1,10 @@
 const API_URL = "https://kodiraonica-todos.herokuapp.com/api";
 
 async function getAllTodos() {
-    return await fetch(`${API_URL}/todo`);
+    return await fetch(`${API_URL}/todos`);
 }
 
-async function saveTodoItem(value) {
+async function createTodo(value) {
     return await fetch(`${API_URL}/todo`, {
       method: "POST",
       body: JSON.stringify({
@@ -16,7 +16,7 @@ async function saveTodoItem(value) {
     });
 }
 
-async function deleteTodoItem(id) {
+async function removeTodo(id) {
     return await fetch(`${API_URL}/delete/${id}`, {
       method: "DELETE"
     });
