@@ -5,11 +5,11 @@ const messages = {
     },
     ERROR_MESSAGE_ALREDY_EXISTS: {
         text: "Item already exists",
-        ststus: "error"
+        status: "error"
     },
     SUCCESS_MESSAGE_ITEMS_LOADED: {
         text: "Item loaded",
-        ststus: "success"
+        status: "success"
     },
     SUCCESS_MESSAGE_ITEM_CREATED: {
         text: "Item created",
@@ -29,11 +29,21 @@ const messages = {
     },
 };
 
+const {
+    ERROR_MESSAGE_EMPTY,
+    ERROR_MESSAGE_ALREDY_EXISTS,
+    SUCCESS_MESSAGE_ITEMS_LOADED,
+    SUCCESS_MESSAGE_ITEM_CREATED,
+    SUCCESS_MESSAGE_ITEM_REMOVED,
+    EMPTY_TODOS,
+    ERROR_MESSAGE_SMTH_WENT_WRONG
+} = messages;
+
 const button = document.getElementById("add");
 const input = document.getElementsByTagName("input")[0];
 const LOCAL_STORAGE_KEY = "todos";
-const API_URL = "https://kodiraonica-todos.herokuapp.com/api"
 let itemValues = [];
+
 loadTodoItems();
 
 button.addEventListener("click", function(e) {
@@ -42,23 +52,25 @@ button.addEventListener("click", function(e) {
 });
 
 async function loadTodoItems() {
-    await fetch(`${API_URL}/todos`)
-        .then((response) => response.json())
-        .then((res) => itemValues = res)
-        .catch((err) => console.log(err));
+    try {
+        const response = await getAllTodos();
+        const data = await response.json();
+        itemValues = data;
 
-    if (itemValues, length > 0) {
-        itemValues.forEach((todoItem) => {
-            const button = createRemoveButton(todoItem._id);
-            createListItem(button, todoItem.title);
-            removeTodoItem(button, todoItem._id);
-            showMessage(
-                SUCCESS_MESSAGE_ITEMS_LOADED.text, SUCCESS_MESSAGE_ITEMS_LOADED.status
-            );
-        });
-    } else {
+        if (itemValues, length > 0) {
+            itemValues.forEach((todoItem) => {
+                const button = createRemoveButton(todoItem._id);
+                createListItem(button, todoItem.title);
+                removeTodoItem(button, todoItem._id);
+                showMessage(
+                SUCCESS_MESSAGE_ITEMS_LOADED.text, SUCCESS_MESSAGE_ITEMS_LOADED.status);
+            });
+        } else {
         showMessage(EMPTY_TODOS.text, EMPTY_TODOS.status);
-    }
+        };
+    } catch (e) {
+        console.log(e);
+    };
 }
 
 async function addTodoItem(value) {
@@ -78,26 +90,18 @@ async function addTodoItem(value) {
         return;
     }
 
-    await fetch(`${API_URL}/todo`, {
-            method: "POST",
-            body: JSON.stringify({
-                title: value
-            }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            }
-        })
-
-        .then((response) => response.json())
-        .then((json) => {
-            itemValues.push(value);
-            const button = createRemoveButton(json._id);
-            createListItem(button, json.title);
-            removeTodoItem(button, json._id);
-            showMessage(SUCCESS_MESSAGE_ITEM_CREATED.text, SUCCESS_MESSAGE_ITEM_CREATED.status);
-            resetForm();
-        })
-        .catch((err) => console.log(err));
+    try {
+        const response = await saveTodoItem(value);
+        const newTodoItem = await response.json();
+        const button = createRemoveButton(newTodoItem._id);
+        itemValues.push(newTodoItem);
+        showMessage(SUCCESS_MESSAGE_ITEM_CREATED.text, SUCCESS_MESSAGE_ITEM_CREATED.status);
+        removeTodoItem(button, newTodoItem._id);
+        createListItem(button, newTodoItem.title);
+        resetForm();
+    } catch (e) {
+        showMessage(e, "error");
+    }
 }
 
 function resetForm() {
@@ -105,44 +109,35 @@ function resetForm() {
     form.reset();
 }
 
-function createRemoveButton(id) {
+function createRemoveButton(value) {
     const button = document.createElement("button");
     button.innerHTML = "remove";
-    button.setAttribute(
-        "id",
-        `removeBtn-${id}`);
+    button.setAttribute("class", "removeBtn");
+    button.setAttribute("id", value);
     return button;
 }
 
 function createListItem(button, value) {
-    const ul = document.getElementsByTagName("ul")[0];
     const li = document.createElement("li");
+    const span = document.createElement("span");
+    const ul = document.getElementsByTagName("ul")[0];
     ul.appendChild(li);
-    li.innerHTML = value;
+    span.innerHTML = value;
+    li.appendChild(span);
     li.appendChild(button);
 }
 
 function removeTodoItem(button, id) {
     button.addEventListener("click", async function() {
-        console.log(itemValues)
-        console.log(id)
-        await fetch(`${API_URL}/delete/${id}`, {
-                method: "DELETE"
-            })
-            .then((response) => {
-                if (response.status == 200) {
-                    button.parentElement.remove();
-                    const newItemValues = itemValues.filter((itemValue) => itemValue._id !== id);
-                    console.log(newItemValues)
-                    itemValues = newItemValues;
-                    showMessage(SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status);
-                } else {
-                    showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status);
-                }
-
-            })
-
-
+        try {
+            await deleteTodoItem(id);
+            button.parentElement.remove();
+            const newItemValues = itemValues.filter((item) => item._id !== id);
+            itemValues = newItemValues;
+            showMessage (SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status);
+        } catch (e) {
+            showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status);
+        };
     });
 }
 
