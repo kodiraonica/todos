@@ -92,15 +92,15 @@ async function addTodoItem(value) {
 
     try {
         const response = await saveTodoItem(value);
-        const newTodoItem = await response.json();
-        const button = createRemoveButton(newTodoItem._id);
-        itemValues.push(newTodoItem);
+        const data = await response.json();
+        itemValues.push(data);
+        const button = createRemoveButton(data._id);
+        createListItem(button, data.title);
+        removeTodoItem(button, data._id);
         showMessage(SUCCESS_MESSAGE_ITEM_CREATED.text, SUCCESS_MESSAGE_ITEM_CREATED.status);
-        removeTodoItem(button, newTodoItem._id);
-        createListItem(button, newTodoItem.title);
         resetForm();
     } catch (e) {
-        showMessage(e, "error");
+        console.log(e);
     }
 }
 
@@ -137,6 +137,7 @@ function removeTodoItem(button, id) {
             showMessage (SUCCESS_MESSAGE_ITEM_REMOVED.text, SUCCESS_MESSAGE_ITEM_REMOVED.status);
         } catch (e) {
             showMessage(ERROR_MESSAGE_SMTH_WENT_WRONG.text, ERROR_MESSAGE_SMTH_WENT_WRONG.status);
+            console.log(e);
         };
     });
 }
