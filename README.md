@@ -1,2 +1,3 @@
-# todos
-A todo list with which I teach my students to manipulate the DOM
+# Workshop
+
+A start code for our free workshop
